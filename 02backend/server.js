@@ -45,7 +45,14 @@ app.delete("/notes/:index", (req, res) => {
     notes.splice(Number(index), 1)
     res.status(200).json({ message: "Note deleted successfully" })
 })
-// 
+// patch is to update partial data of the resource 
+app.patch("/notes/:index", (req, res) => {
+    const index = req.params.index
+    const { title, description } = req.body
+    notes[Number(index)].title = title
+    notes[Number(index)].description = description
+    res.status(200).json({ message: "Note updated successfully" })
+})
 
 
 // start server on specific port
