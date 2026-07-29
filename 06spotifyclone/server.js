@@ -1,18 +1,10 @@
 import app from "./src/app.js";
 import connectDB from "./src/db/db.js";
 
-const PORT = process.env.PORT || 5000;
+await connectDB();
 
-const startServer = async () => {
-    try {
-        await connectDB();
-        app.listen(PORT, () => {
-            console.log(`SpotifyClone API running on port ${PORT}`);
-        });
-    } catch (error) {
-        console.error('Failed to start server:', error.message);
-        process.exit(1);
-    }
-};
 
-startServer();
+        
+app.listen(3000, () => {
+    console.log(`SpotifyClone API running on http://localhost:3000`);
+});
