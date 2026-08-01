@@ -13,12 +13,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@imagekit/javascript": "^5.4.1",
+    "@imagekit/nodejs": "^7.10.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "install": "^0.13.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.8.0"
+    "mongoose": "^9.8.0",
+    "multer": "^2.2.0",
+    "npm": "^11.19.0"
   }
 }

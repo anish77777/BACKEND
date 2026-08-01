@@ -1,0 +1,142 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='940' viewBox='0 0 1600 940' role='img' aria-labelledby='title description'>
+  <title id='title'>Express music upload middleware flow</title>
+  <desc id='description'>A request moves from Postman or the frontend through the Express music route, artist authentication middleware, Multer, the music controller, ImageKit, MongoDB, and back as a JSON response.</desc>
+
+  <defs>
+    <linearGradient id='background' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='#f8fafc'/>
+      <stop offset='100%' stop-color='#eef2ff'/>
+    </linearGradient>
+    <filter id='shadow' x='-20%' y='-20%' width='140%' height='140%'>
+      <feDropShadow dx='0' dy='8' stdDeviation='10' flood-color='#0f172a' flood-opacity='0.13'/>
+    </filter>
+    <marker id='arrow' markerWidth='12' markerHeight='12' refX='10' refY='6' orient='auto'>
+      <path d='M 0 0 L 12 6 L 0 12 z' fill='#475569'/>
+    </marker>
+    <style>
+      .heading { font: 700 40px Arial, sans-serif; fill: #0f172a; }
+      .subheading { font: 400 20px Arial, sans-serif; fill: #475569; }
+      .box-title { font: 700 23px Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 17px Arial, sans-serif; fill: #334155; }
+      .code { font: 700 17px Consolas, monospace; fill: #1e293b; }
+      .arrow-label { font: 700 15px Arial, sans-serif; fill: #475569; }
+      .step { font: 700 17px Arial, sans-serif; fill: white; }
+      .flow-line { stroke: #475569; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width='1600' height='940' fill='url(#background)'/>
+
+  <text x='800' y='62' text-anchor='middle' class='heading'>Express Music Upload Request Flow</text>
+  <text x='800' y='96' text-anchor='middle' class='subheading'>POST /api/music/create — authentication, multipart parsing, storage, and database</text>
+
+  <!-- Step 1: client -->
+  <g filter='url(#shadow)'>
+    <rect x='45' y='185' width='250' height='310' rx='24' fill='#ffffff' stroke='#3b82f6' stroke-width='3'/>
+    <circle cx='78' cy='218' r='19' fill='#3b82f6'/>
+    <text x='78' y='224' text-anchor='middle' class='step'>1</text>
+    <text x='112' y='226' class='box-title'>Client request</text>
+    <text x='70' y='272' class='code'>POST /api/music/create</text>
+    <text x='70' y='310' class='box-text'>multipart/form-data</text>
+    <text x='70' y='346' class='box-text'>title → text field</text>
+    <text x='70' y='382' class='box-text'>music → audio file</text>
+    <text x='70' y='418' class='box-text'>token → HTTP cookie</text>
+    <text x='70' y='466' class='box-text'>Postman or frontend</text>
+  </g>
+
+  <!-- Step 2: Express route -->
+  <g filter='url(#shadow)'>
+    <rect x='345' y='185' width='250' height='310' rx='24' fill='#ffffff' stroke='#64748b' stroke-width='3'/>
+    <circle cx='378' cy='218' r='19' fill='#64748b'/>
+    <text x='378' y='224' text-anchor='middle' class='step'>2</text>
+    <text x='412' y='226' class='box-title'>Express router</text>
+    <text x='370' y='276' class='code'>app.use('/api/music')</text>
+    <text x='370' y='318' class='code'>router.post('/create')</text>
+    <text x='370' y='370' class='box-text'>Matches method + path</text>
+    <text x='370' y='406' class='box-text'>Runs handlers from</text>
+    <text x='370' y='435' class='box-text'>left to right</text>
+  </g>
+
+  <!-- Step 3: authentication -->
+  <g filter='url(#shadow)'>
+    <rect x='645' y='155' width='270' height='370' rx='24' fill='#ecfdf5' stroke='#10b981' stroke-width='3'/>
+    <circle cx='678' cy='188' r='19' fill='#10b981'/>
+    <text x='678' y='194' text-anchor='middle' class='step'>3</text>
+    <text x='712' y='196' class='box-title'>authenticatedArtist</text>
+    <text x='670' y='246' class='box-text'>Read token cookie</text>
+    <text x='670' y='282' class='box-text'>Verify JWT signature</text>
+    <text x='670' y='318' class='box-text'>Require role: artist</text>
+    <text x='670' y='354' class='code'>req.user = decoded</text>
+    <text x='670' y='400' class='code'>next()</text>
+    <text x='670' y='442' class='box-text'>Failure stops the flow:</text>
+    <text x='670' y='478' class='box-text'>401 or 403 response</text>
+  </g>
+
+  <!-- Step 4: Multer -->
+  <g filter='url(#shadow)'>
+    <rect x='965' y='185' width='250' height='310' rx='24' fill='#fff7ed' stroke='#f97316' stroke-width='3'/>
+    <circle cx='998' cy='218' r='19' fill='#f97316'/>
+    <text x='998' y='224' text-anchor='middle' class='step'>4</text>
+    <text x='1032' y='226' class='box-title'>Multer</text>
+    <text x='990' y='276' class='code'>upload.single('music')</text>
+    <text x='990' y='324' class='box-text'>Parses multipart data</text>
+    <text x='990' y='370' class='code'>req.body.title</text>
+    <text x='990' y='412' class='code'>req.file.buffer</text>
+    <text x='990' y='458' class='box-text'>Then calls next()</text>
+  </g>
+
+  <!-- Step 5: controller -->
+  <g filter='url(#shadow)'>
+    <rect x='1265' y='185' width='290' height='310' rx='24' fill='#f5f3ff' stroke='#8b5cf6' stroke-width='3'/>
+    <circle cx='1298' cy='218' r='19' fill='#8b5cf6'/>
+    <text x='1298' y='224' text-anchor='middle' class='step'>5</text>
+    <text x='1332' y='226' class='box-title'>createMusic</text>
+    <text x='1290' y='276' class='code'>artist = req.user.id</text>
+    <text x='1290' y='318' class='box-text'>Validate title + file</text>
+    <text x='1290' y='360' class='box-text'>Upload audio buffer</text>
+    <text x='1290' y='402' class='box-text'>Store returned URL</text>
+    <text x='1290' y='444' class='box-text'>Return status 201</text>
+  </g>
+
+  <!-- Main pipeline arrows -->
+  <path d='M 295 340 L 345 340' class='flow-line'/>
+  <path d='M 595 340 L 645 340' class='flow-line'/>
+  <path d='M 915 340 L 965 340' class='flow-line'/>
+  <path d='M 1215 340 L 1265 340' class='flow-line'/>
+  <text x='320' y='326' text-anchor='middle' class='arrow-label'>request</text>
+  <text x='620' y='326' text-anchor='middle' class='arrow-label'>match</text>
+  <text x='940' y='326' text-anchor='middle' class='arrow-label'>next()</text>
+  <text x='1240' y='326' text-anchor='middle' class='arrow-label'>next()</text>
+
+  <!-- External services -->
+  <g filter='url(#shadow)'>
+    <rect x='885' y='650' width='280' height='175' rx='22' fill='#eff6ff' stroke='#2563eb' stroke-width='3'/>
+    <text x='1025' y='696' text-anchor='middle' class='box-title'>ImageKit</text>
+    <text x='1025' y='738' text-anchor='middle' class='box-text'>Receives audio bytes</text>
+    <text x='1025' y='774' text-anchor='middle' class='box-text'>Returns media URL</text>
+  </g>
+
+  <g filter='url(#shadow)'>
+    <rect x='1265' y='650' width='290' height='175' rx='22' fill='#ecfdf5' stroke='#059669' stroke-width='3'/>
+    <text x='1410' y='696' text-anchor='middle' class='box-title'>MongoDB</text>
+    <text x='1410' y='738' text-anchor='middle' class='code'>{ title, uri, artist }</text>
+    <text x='1410' y='774' text-anchor='middle' class='box-text'>Stores URL, not audio bytes</text>
+  </g>
+
+  <g filter='url(#shadow)'>
+    <rect x='45' y='650' width='550' height='175' rx='22' fill='#ffffff' stroke='#0f172a' stroke-width='3'/>
+    <text x='320' y='696' text-anchor='middle' class='box-title'>JSON response to client</text>
+    <text x='320' y='740' text-anchor='middle' class='code'>201 Music created successfully</text>
+    <text x='320' y='778' text-anchor='middle' class='box-text'>id + title + uri + artist</text>
+  </g>
+
+  <!-- Controller service arrows -->
+  <path d='M 1370 495 C 1340 565, 1160 580, 1080 650' class='flow-line'/>
+  <text x='1210' y='570' class='arrow-label'>file.buffer</text>
+  <path d='M 1165 738 L 1265 738' class='flow-line'/>
+  <text x='1215' y='720' text-anchor='middle' class='arrow-label'>URL + fields</text>
+  <path d='M 1265 805 C 1050 900, 710 900, 595 760' class='flow-line'/>
+  <text x='900' y='885' text-anchor='middle' class='arrow-label'>controller returns JSON</text>
+
+  <text x='800' y='920' text-anchor='middle' class='subheading'>If middleware sends a response, Express stops there; next() is called only when that step succeeds.</text>
+</svg>
